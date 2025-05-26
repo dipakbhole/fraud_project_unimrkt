@@ -63,19 +63,7 @@ def check_email(input_data: EmailInput):
         "verdict": "REJECTED" if matches else "ACCEPTED"
     }
 
-# @app.get("/")
-# def root():
-#     return {
-#         "message": "FastAPI Email Similarity API is running.",
-#         "status": "ok"
-#     }
-
-@app.get("/check-email/")
-def check_email_get():
-    return {
-        "usage": "Send a POST request to this endpoint with JSON body: { 'email': 'test@example.com' }"
-    }
 
 
-# if __name__ == "__main__":
-#     uvicorn.run("main:app", host="127.0.0.1", port=8000, reload=True)
+if __name__ == "__main__":
+    uvicorn.run("main:app", host="127.0.0.1", port=8000, reload=True)
