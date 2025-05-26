@@ -45,7 +45,7 @@ def check_email_similarity(input_email: str, df_emails: pd.DataFrame):
             })
     return matches
 
-@app.post("/check-email/")
+@app.get("/check-email/")
 def check_email(input_data: EmailInput):
     try:
         # Connect and fetch emails
