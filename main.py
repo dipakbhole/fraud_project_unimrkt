@@ -20,13 +20,13 @@ if env_path.exists():
 else:
     print("Using Azure App Settings or system environment variables")
 
+# Read Config from environment
 
-# Config — Update this to match your DB
-# Database configuration
-username = "unipaneldev"
-raw_password = "Apps123@!@#"
-host = "dev-unipaneldb.postgres.database.azure.com"
-database = "unipaneldb"
+username = os.getenv("DB_USERNAME")
+raw_password = os.getenv("DB_PASSWORD")
+host = os.getenv("DB_HOST")
+database = os.getenv("DB_NAME")
+
 
 # Encode password
 encoded_password = urllib.parse.quote_plus(raw_password)
@@ -84,7 +84,6 @@ def check_email(input_data: EmailInput):
         "matches": matches,
         "verdict": "REJECTED" if len(matches) > MATCH_LIMIT else "ACCEPTED"
     }
-
 
 
 if __name__ == "__main__":
