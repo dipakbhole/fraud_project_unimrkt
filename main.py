@@ -2,28 +2,34 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, EmailStr
 from sqlalchemy import create_engine
 import pandas as pd
+import os
 import urllib
 import uvicorn
+import psycopg2
 from rapidfuzz import fuzz
 
 # Config — Update this to match your DB
-# Your credentials
-username = "unilink"
-raw_password = "Apps@!@#"  # Your real password
+# Database configuration
+username = "unipaneldev"
+raw_password = "Apps123@!@#"
+host = "dev-unipaneldb.postgres.database.azure.com"
+database = "unipaneldb"
 
 # Encode password
 encoded_password = urllib.parse.quote_plus(raw_password)
 
 # Build connection string
-conn_string = (
-    f"mssql+pyodbc://{username}:{encoded_password}@unilink.database.windows.net/unilinkdb-dev"
-    "?driver=ODBC+Driver+17+for+SQL+Server"
-)
+# PostgreSQL SQLAlchemy connection string
+conn_string = f"postgresql+psycopg2://{username}:{encoded_password}@{host}/{database}"
+
 
 # Create engine
 engine = create_engine(conn_string)
 
-SIMILARITY_THRESHOLD = 85
+# Read from environment variables 
+SIMILARITY_THRESHOLD = int(os.getenv("SIMILARITY_THRESHOLD"))
+MATCH_LIMIT = int(os.getenv("MATCH_LIMIT"))
+
 
 # FastAPI app
 app = FastAPI()
@@ -49,7 +55,7 @@ def check_email_similarity(input_email: str, df_emails: pd.DataFrame):
 def check_email(input_data: EmailInput):
     try:
         # Connect and fetch emails
-        df = pd.read_sql("SELECT email FROM fraud_test_data", engine)
+        df = pd.read_sql('SELECT email FROM "Panelists"', engine)
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Database error: {e}")
 
@@ -60,7 +66,7 @@ def check_email(input_data: EmailInput):
         "input_email": input_email,
         "match_count": len(matches),
         "matches": matches,
-        "verdict": "REJECTED" if matches else "ACCEPTED"
+        "verdict": "REJECTED" if len(matches) > MATCH_LIMIT else "ACCEPTED"
     }
 
 

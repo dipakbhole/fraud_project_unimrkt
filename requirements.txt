@@ -7,3 +7,4 @@ pyodbc
 urllib3 == 2.2.3
 rapidfuzz
 email_validator  == 2.2.0
+psycopg2
