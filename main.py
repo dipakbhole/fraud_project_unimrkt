@@ -6,7 +6,20 @@ import os
 import urllib
 import uvicorn
 import psycopg2
+from pathlib import Path
 from rapidfuzz import fuzz
+from dotenv import load_dotenv
+
+
+# Load .env only if present (for local)
+# ----------------------------------------
+env_path = Path(".env")
+if env_path.exists():
+    load_dotenv(dotenv_path=env_path)
+    print("Loaded environment variables from .env")
+else:
+    print("Using Azure App Settings or system environment variables")
+
 
 # Config — Update this to match your DB
 # Database configuration
@@ -25,6 +38,9 @@ conn_string = f"postgresql+psycopg2://{username}:{encoded_password}@{host}/{data
 
 # Create engine
 engine = create_engine(conn_string)
+
+# Load variables from .env file
+load_dotenv()
 
 # Read from environment variables 
 SIMILARITY_THRESHOLD = int(os.getenv("SIMILARITY_THRESHOLD"))
